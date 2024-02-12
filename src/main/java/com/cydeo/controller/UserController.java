@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,7 @@ public class UserController {
 
     //Below retrieve all users:
     @GetMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> getUsers(){
         List<UserDTO> userDTOList = userService.listAllUsers();
         //inside ok() you need to pass responsewrapper object
@@ -34,12 +36,14 @@ public class UserController {
     }
     //Below get specific user:
     @GetMapping("/{userName}")
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> getUserByUserName(@PathVariable("userName") String userName){
         UserDTO user = userService.findByUserName(userName);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully retrieved", user, HttpStatus.OK));
     }
     // create user:
     @PostMapping
+    @RolesAllowed("Admin")
     //If you need to catch something from Postman, you need to catch it with @RequestBody
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO user){
     userService.save(user);
@@ -47,12 +51,14 @@ public class UserController {
     }
     //update user:
     @PutMapping
+    @RolesAllowed("Admin")
     //If you need to catch something from Postman, you need to catch it with @RequestBody
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user){
         userService.update(user);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully updated",user,HttpStatus.OK));
     }
     @DeleteMapping("/{userName}")
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable ("userName") String userName){
         userService.deleteByUserName(userName);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully deleted", HttpStatus.OK));
@@ -61,13 +67,5 @@ public class UserController {
         //return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseWrapper("User is successfully deleted", HttpStatus.OK));
 
     }
-
-
-
-
-
-
-
-
 
 }
