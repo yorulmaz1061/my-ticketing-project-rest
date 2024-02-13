@@ -3,6 +3,8 @@ package com.cydeo.controller;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 //we add version number
 //with one end point you can implement all CRUD
+@Tag(name = "UserController",description = "UserAPI")
+//Above for swagger
 public class UserController {
     private final UserService userService;
 
@@ -28,6 +32,7 @@ public class UserController {
     //Below retrieve all users:
     @GetMapping
     @RolesAllowed("Admin")
+    @Operation(summary = "Get Users")
     public ResponseEntity<ResponseWrapper> getUsers(){
         List<UserDTO> userDTOList = userService.listAllUsers();
         //inside ok() you need to pass responsewrapper object
@@ -37,6 +42,7 @@ public class UserController {
     //Below get specific user:
     @GetMapping("/{userName}")
     @RolesAllowed("Admin")
+    @Operation(summary = "Get User By Username")
     public ResponseEntity<ResponseWrapper> getUserByUserName(@PathVariable("userName") String userName){
         UserDTO user = userService.findByUserName(userName);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully retrieved", user, HttpStatus.OK));
@@ -45,6 +51,7 @@ public class UserController {
     @PostMapping
     @RolesAllowed("Admin")
     //If you need to catch something from Postman, you need to catch it with @RequestBody
+    @Operation(summary = "Create User")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO user){
     userService.save(user);
     return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("User is successfully created", HttpStatus.CREATED));
@@ -53,12 +60,14 @@ public class UserController {
     @PutMapping
     @RolesAllowed("Admin")
     //If you need to catch something from Postman, you need to catch it with @RequestBody
+    @Operation(summary = "Update User")
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user){
         userService.update(user);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully updated",user,HttpStatus.OK));
     }
     @DeleteMapping("/{userName}")
     @RolesAllowed("Admin")
+    @Operation(summary = "Delete User")
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable ("userName") String userName){
         userService.deleteByUserName(userName);
         return ResponseEntity.ok(new ResponseWrapper("User is successfully deleted", HttpStatus.OK));
