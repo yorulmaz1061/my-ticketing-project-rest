@@ -1,6 +1,7 @@
 package com.cydeo.controller;
 
 import com.cydeo.annotation.DefaultExceptionMessage;
+import com.cydeo.annotation.ExecutionTime;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.exception.TicketingProjectException;
@@ -32,6 +33,7 @@ public class UserController {
     //ResponseEntity<ResponseWrapper> enable us to get custom output
 
     //Below retrieve all users:
+    @ExecutionTime // It is our custom annotation for logging
     @GetMapping
     @RolesAllowed("Admin")
     @Operation(summary = "Get Users")
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseEntity.ok(new ResponseWrapper("Users are successfully retrieved",userDTOList, HttpStatus.OK));
 
     }
+    @ExecutionTime
     //Below get specific user:
     @GetMapping("/{userName}")
     @RolesAllowed("Admin")
